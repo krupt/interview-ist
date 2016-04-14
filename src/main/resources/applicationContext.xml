@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+
+	<context:component-scan base-package="ru.ist" />
+
+    <tx:annotation-driven />
+
+    <jpa:repositories base-package="ru.ist.repository" />
+
+	<mvc:annotation-driven />
+	<mvc:resources location="/resources/" mapping="/resources/**" />
+
+	<security:global-method-security secured-annotations="enabled" pre-post-annotations="enabled" />
+	<security:http pattern="/resources/**" security="none" />
+	<security:http>
+		<security:access-denied-handler ref="accessDeniedHandler" />
+		<security:form-login
+			login-page="/login"
+            default-target-url="/" />
+		<security:logout
+			logout-url="/logout"
+			logout-success-url="/login" />
+		<security:remember-me user-service-ref="userDetailsService" key="ist-app" />
+        <security:intercept-url pattern="/login" access="permitAll" />
+        <security:intercept-url pattern="/**" access="isAuthenticated()" />
+	</security:http>
+	<security:authentication-manager>
+		<security:authentication-provider user-service-ref="userDetailsService">
+			<security:password-encoder hash="bcrypt" />
+		</security:authentication-provider>
+	</security:authentication-manager>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:application.properties" />
+    </bean>
+    <bean id="accessDeniedHandler" class="ru.ist.security.AjaxRequestAccessDeniedHandler">
+        <property name="errorPage" value="/403" />
+    </bean>
+    <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="defaultEncoding" value="UTF-8" />
+        <property name="templateLoaderPath" value="/WEB-INF/view/" />
+    </bean>
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="suffix" value=".ftl" />
+        <property name="requestContextAttribute" value="rq" />
+        <property name="contentType" value="text/html; charset=UTF-8" />
+        <!-- Отключаем свойство кэша для удобства разработки -->
+        <property name="cache" value="false" />
+    </bean>
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="poolName" value="DatabasePool" />
+		<property name="connectionTestQuery" value="SELECT 1" />
+		<property name="dataSourceClassName" value="org.postgresql.ds.PGSimpleDataSource" />
+		<property name="jdbcUrl" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+	<bean id="vendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="packagesToScan" value="ru.ist.model" />
+		<property name="dataSource" ref="dataSource" />
+		<property name="jpaVendorAdapter" ref="vendorAdapter" />
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL94Dialect</prop>
+				<prop key="hibernate.format_sql">true</prop>
+                <!-- Включено для разработки -->
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+	</bean>
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <constructor-arg ref="entityManagerFactory" />
+    </bean>
+</beans>

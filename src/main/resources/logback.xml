@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:noNamespaceSchemaLocation="http://www.padual.com/java/logback.xsd"
+		scan="true" scanPeriod="300 seconds">
+    <if condition='isDefined("catalina.home")'>
+        <then>
+            <property scope="context" name="logPath" value="${catalina.home}/logs" />
+        </then>
+        <else>
+            <property scope="context" name="logPath" value="logs" />
+        </else>
+    </if>
+    <property scope="context" name="logPattern" value="%date{HH:mm:ss.SSS} %-5level %logger - %message%n" />
+    <property scope="context" name="rootLevel" value="INFO" />
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<pattern>${logPattern}</pattern>
+		</layout>
+	</appender>
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>${logPattern}</pattern>
+		</encoder>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${logPath}/ist/%d{yyyy.MM.dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>10MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+		</rollingPolicy>
+	</appender>
+	<logger name="ru.ist" level="DEBUG" additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger name="org.hibernate.SQL" level="DEBUG" additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger name="org.hibernate.type" level="TRACE" additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+	<logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="${rootLevel}" additivity="false">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</logger>
+    <logger name="org.hibernate.type.CollectionType" level="${rootLevel}" additivity="false">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+    <logger name="org.hibernate.type.BasicTypeRegistry" level="${rootLevel}" additivity="false">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="STDOUT" />
+    </logger>
+	<root level="${rootLevel}">
+		<appender-ref ref="FILE" />
+		<appender-ref ref="STDOUT" />
+	</root>
+</configuration>
