@@ -1,0 +1,77 @@
+body {
+	padding: 70px 0 10px;
+}
+.btn:focus, .btn:active {
+	outline: none !important;
+}
+#authPanel .nav.navbar-nav.navbar-right > li > a {
+	padding-left: 40px;
+}
+#authPanel .nav.navbar-nav.navbar-right > li > a > .fa {
+	position: absolute;
+	top: 10px;
+	left: 8px;
+}
+.logout-btn {
+	padding: 15px 15px 15px 40px;
+	background-color: transparent;
+	border: none;
+	opacity: 0.8;
+	outline: none !important;
+}
+.logout-btn > .fa {
+	position: absolute;
+	top: 10px;
+	left: 8px;
+}
+.logout-btn:hover {
+	opacity: 1;
+}
+.input-img > input {
+	padding-left: 30px;
+}
+.input-img > input + .fa {
+	position: absolute;
+	top: 8px;
+	left: 24px;
+	font-size: 1.3em;
+	cursor: default;
+}
+.input-img.password-visible > input + .fa {
+    cursor: pointer;
+}
+.checkbox input[type=checkbox] {
+    clip: rect(0, 0, 0, 0);
+}
+.checkbox > label {
+    padding-left: 30px;
+}
+.checkbox input[type=checkbox] + i.fa {
+    cursor: pointer;
+    font-size: 2em;
+    position: absolute;
+    top: 3px;
+    left: 0;
+}
+.checkbox input[type=checkbox]:focus + i.fa {
+    color: #337ab7;
+}
+.checkbox input[type=checkbox] + i.fa:before {
+    content: "\f096";
+}
+.checkbox input[type=checkbox]:checked + i.fa:before {
+    content: "\f046";
+}
+.checkbox input[type=checkbox]:checked + i.fa {
+    color: #3c763d;
+}
+.fixed-button-tool {
+    position: fixed;
+    top: 50px;
+    width: 100%;
+    background-color: #fff;
+    padding-top: 10px;
+}
+#payment_list {
+    margin-top: 30px;
+}
