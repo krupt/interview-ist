@@ -115,40 +115,40 @@ BEGIN
 
   INSERT INTO t_user2role(user_id, role_id)
   VALUES (vUserId, vUserRoleId),
-    (vManagerId, vManagerRoleId),
-    (vChiefId, vChiefRoleId);
+         (vManagerId, vManagerRoleId),
+         (vChiefId, vChiefRoleId);
 
   INSERT INTO t_payment(description, create_date, state, created_user_id, accepted_user_id)
   VALUES ('Второй платеж', current_timestamp, 'NEW', vUserId, null),
-    ('Третий платеж за аренду', current_timestamp, 'NEW', vUserId, null),
-    ('Четвертый платеж за оргтехнику', current_timestamp, 'ACCEPTED', vUserId, vManagerId),
-    ('Пятый платеж за интернет', current_timestamp, 'ACCEPTED', vUserId, vManagerId),
-    ('Шестой платеж за комунальные услуги', current_timestamp, 'DECLINED', vUserId, vManagerId),
-    ('Седьмая выплата по договору IT-консалтинга', current_timestamp, 'COMPLETED', vUserId, vManagerId),
-    ('Восьмая выплата премии', current_timestamp, 'COMPLETED', vUserId, vManagerId),
-    ('Девятая оплата корпоратива', current_timestamp, 'DECLINED', vUserId, vManagerId),
-    ('Первый кросс', current_timestamp, 'ACCEPTED', ( SELECT MIN(u.id)
-                                                      FROM t_user u
-                                                        JOIN t_user2role ur ON ur.user_id = u.id
-                                                        JOIN t_role r ON r.id = ur.role_id
-                                                                         AND r.name = 'USER'
-    ), ( SELECT MAX(u.id)
-         FROM t_user u
-           JOIN t_user2role ur ON ur.user_id = u.id
-           JOIN t_role r ON r.id = ur.role_id
-                            AND r.name = 'MANAGER'
-     )
-    ),
-    ('Второй кросс', current_timestamp, 'ACCEPTED', ( SELECT MAX(u.id)
-                                                      FROM t_user u
-                                                        JOIN t_user2role ur ON ur.user_id = u.id
-                                                        JOIN t_role r ON r.id = ur.role_id
-                                                                         AND r.name = 'USER'
-    ), ( SELECT MIN(u.id)
-         FROM t_user u
-           JOIN t_user2role ur ON ur.user_id = u.id
-           JOIN t_role r ON r.id = ur.role_id
-                            AND r.name = 'MANAGER'
-     )
-    );
+         ('Третий платеж за аренду', current_timestamp, 'NEW', vUserId, null),
+         ('Четвертый платеж за оргтехнику', current_timestamp, 'ACCEPTED', vUserId, vManagerId),
+         ('Пятый платеж за интернет', current_timestamp, 'ACCEPTED', vUserId, vManagerId),
+         ('Шестой платеж за комунальные услуги', current_timestamp, 'DECLINED', vUserId, vManagerId),
+         ('Седьмая выплата по договору IT-консалтинга', current_timestamp, 'COMPLETED', vUserId, vManagerId),
+         ('Восьмая выплата премии', current_timestamp, 'COMPLETED', vUserId, vManagerId),
+         ('Девятая оплата корпоратива', current_timestamp, 'DECLINED', vUserId, vManagerId),
+         ('Первый кросс', current_timestamp, 'ACCEPTED', ( SELECT MIN(u.id)
+                                                           FROM t_user u
+                                                           JOIN t_user2role ur ON ur.user_id = u.id
+                                                           JOIN t_role r ON r.id = ur.role_id
+                                                               AND r.name = 'USER'
+                                                          ), ( SELECT MAX(u.id)
+                                                               FROM t_user u
+                                                               JOIN t_user2role ur ON ur.user_id = u.id
+                                                               JOIN t_role r ON r.id = ur.role_id
+                                                                   AND r.name = 'MANAGER'
+                                                              )
+         ),
+         ('Второй кросс', current_timestamp, 'ACCEPTED', ( SELECT MAX(u.id)
+                                                           FROM t_user u
+                                                           JOIN t_user2role ur ON ur.user_id = u.id
+                                                           JOIN t_role r ON r.id = ur.role_id
+                                                               AND r.name = 'USER'
+                                                          ), ( SELECT MIN(u.id)
+                                                               FROM t_user u
+                                                               JOIN t_user2role ur ON ur.user_id = u.id
+                                                               JOIN t_role r ON r.id = ur.role_id
+                                                                   AND r.name = 'MANAGER'
+                                                              )
+         );
 END $$;
