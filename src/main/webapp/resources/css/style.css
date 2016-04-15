@@ -1,5 +1,5 @@
 body {
-	padding: 70px 0;
+	padding: 70px 0 10px;
 }
 .btn:focus, .btn:active {
 	outline: none !important;
@@ -67,9 +67,10 @@ body {
 }
 .fixed-button-tool {
     position: fixed;
-    top: 60px;
+    top: 50px;
     width: 100%;
     background-color: #fff;
+    padding-top: 10px;
 }
 #payment_list {
     margin-top: 30px;
